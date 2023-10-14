@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input-field:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(50, 50, 50, 255); /* Adjust the color as needed */
+  }
+}
