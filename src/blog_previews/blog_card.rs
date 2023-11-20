@@ -1,25 +1,26 @@
 use leptos::*;
-use leptos_meta::*;
-use leptos_router::*;
 
-use super::blog_preview_details::BlogPreviewDetails;
+use crate::model::post::Post;
 
 #[component]
-pub fn BlogCard(details: BlogPreviewDetails) -> impl IntoView {
+pub fn BlogCard(blog_preview: Post) -> impl IntoView {
+    let dt = format!("{}", blog_preview.dt.format("%b %e, %Y %I:%M%P"));
     view! {
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6 flex items-center space-x-6">
-            // <img src="path_to_thumbnail.jpg" alt="Blog Thumbnail" class="w-32 h-24 rounded-lg object-cover">
 
-            <div class="flex-1">
-                <h2 class="text-xl font-semibold mb-2">{details.title}</h2>
+        <a href={format!("/view/{}", blog_preview.id)}>
+            <div class="bg-white p-6 rounded-lg shadow-md mb-6 mr-10 p-10 flex flex-none w-96 h-48">
+                <img src={blog_preview.image_url} alt="Blog Thumbnail" class="w-32 h-24 rounded-lg object-cover mr-4"/>
 
-                <p class="text-gray-600 mb-4">{details.text}</p>
+                <div class="flex-none">
+                    <h2 class="text-xl font-semibold mb-2">{blog_preview.title}</h2>
 
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-500">Oct 13, 2023</span>
-                    <a href="#" class="text-blue-600 hover:underline">Read More</a>
+                    <p class="text-gray-600 mb-4">{blog_preview.text}</p>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">{dt}</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     }
 }

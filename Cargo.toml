@@ -12,12 +12,18 @@ actix-web = { version = "4", optional = true, features = ["macros"] }
 console_error_panic_hook = "0.1"
 cfg-if = "1"
 http = { version = "0.2", optional = true }
-leptos = { version = "0.5", features = ["nightly"] }
-leptos_meta = { version = "0.5", features = ["nightly"] }
+leptos = { version = "0.5" }
+leptos_meta = { version = "0.5" }
 leptos_actix = { version = "0.5", optional = true }
-leptos_router = { version = "0.5", features = ["nightly"] }
+leptos_router = { version = "0.5" }
 wasm-bindgen = "=0.2.87"
-chrono = "0.4.31"
+chrono = { version = "0.4.31", features = ["serde"] }
+sqlx = { version = "0.7", features = [ "runtime-tokio", "sqlite", "chrono" ], optional = true }
+serde = { version = "1.0.187", features = ["derive"] }
+uuid = {version = "1.5.0", optional = true, features = ["v4"] }
+env_logger = "0.10.0"
+log = "0.4.20"
+whoami = { version = "1.4.1", features = ["default"] }
 
 [features]
 csr = ["leptos/csr", "leptos_meta/csr", "leptos_router/csr"]
@@ -26,6 +32,8 @@ ssr = [
   "dep:actix-files",
   "dep:actix-web",
   "dep:leptos_actix",
+  "dep:sqlx",
+  "dep:uuid",
   "leptos/ssr",
   "leptos_meta/ssr",
   "leptos_router/ssr",

@@ -4,6 +4,7 @@ use leptos_router::*;
 use crate::edit_post::edit_post::EditPost;
 use crate::blog_previews::blog_previews::BlogPreviews;
 use crate::about::about::About;
+use crate::view_post::view_post::ViewPost;
 
 #[component]
 pub fn Navbar() -> impl IntoView {
@@ -11,7 +12,7 @@ pub fn Navbar() -> impl IntoView {
         <div class="bg-stone-800 text-white p-4">
             <div class="container mx-auto flex justify-between items-center">
                 // title on the left
-                <h2 class="text-2xl font-bold">Blog</h2>
+                <a href="/" class="text-2xl font-bold">Blog</a>
 
                 // nav bar
                 <nav>
@@ -41,12 +42,14 @@ pub fn App() -> impl IntoView {
 
         <Navbar/>
         // content for this welcome page
+
         <Router>
             <main>
                 <Routes>
                     <Route path="" view=BlogPreviews/>
                     <Route path="/about" view=About/>
                     <Route path="/edit/:post_id?" view=EditPost/>
+                    <Route path="/view/:post_id?" view=ViewPost/>
                 </Routes>
             </main>
         </Router>

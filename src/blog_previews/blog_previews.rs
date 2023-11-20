@@ -1,8 +1,11 @@
 use leptos::*;
-use leptos_meta::*;
+use leptos::logging::log;
+
+use crate::errors_fallback::error_fallback;
+use crate::model::post::Post;
+use crate::repository::post::get_previews;
 
 use super::blog_card::BlogCard;
-use super::blog_preview_details::BlogPreviewDetails;
 
 #[component]
 fn BlogDescription() -> impl IntoView {
@@ -20,30 +23,32 @@ fn BlogDescription() -> impl IntoView {
 
 #[component]
 pub fn BlogPreviews() -> impl IntoView {
-    let blog_preview_list = vec!(
-        BlogPreviewDetails {
-            title: "Post1".to_string(),
-            text: "This is my most recent blog post! Let me tell you about...".to_string()
-        },
-        BlogPreviewDetails {
-            title: "Post2".to_string(),
-            text: "This is my second post. Woohoo.".to_string()
-        }
+    let post_resource = create_resource(
+        || {},
+        |_| async move { get_previews(None, None, 20, 10).await },
     );
+
+    let previews_view = move || -> Option<Result<View, _>>{
+        post_resource.and_then(|previews| {
+            previews
+                .into_iter()
+                .map(|preview| {
+                    view! {
+                        <BlogCard blog_preview={preview.clone()}/>
+                    }
+                })
+                .collect_view()
+        })
+    };
 
     view! {
         <BlogDescription/>
-        <div class="text-4xl p-4">Blog Posts</div>
-        <div class="bg-gray-100 p-8">
-            {
-                blog_preview_list.into_iter().map(|details| {
-                    view! {
-                        <p>
-                            <BlogCard details={details}/>
-                        </p>
-                    }
-                }).collect::<Vec<_>>()
-            }
+        <div class="bg-gray-100 p-8 flex flex-wrap max-w-full">
+            <Suspense fallback=move || view! { <p>"Loading..."</p> }>
+                <ErrorBoundary fallback={error_fallback()}>
+                    {previews_view}
+                </ErrorBoundary>
+            </Suspense>
         </div>
     }
 }
