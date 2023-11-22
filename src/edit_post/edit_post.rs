@@ -1,13 +1,14 @@
-use std::rc::Rc;
-
 use crate::errors_fallback::error_fallback;
+use crate::toast::ToastType;
 use leptos::logging::log;
 use leptos::*;
 use leptos_router::*;
 
 use crate::model::post::Post;
 use crate::repository::post::get_post;
+use crate::repository::post::DeletePost;
 use crate::repository::post::UpsertPost;
+use crate::toast::ToastMessage;
 use crate::view_post::blog_post::BlogPost;
 use chrono::DateTime;
 use chrono::Utc;
@@ -25,7 +26,6 @@ fn format_rfc3339_without_timezone(datetime: DateTime<Utc>) -> String {
 #[component]
 pub fn EditPost() -> impl IntoView {
     let params: Memo<Result<_, _>> = use_params::<EditPostParams>();
-    let navigate = use_navigate();
     let post_resource: Resource<_, Result<Post, ServerFnError>> = create_resource(
         move || params.get(),
         |params| async move {
@@ -38,29 +38,44 @@ pub fn EditPost() -> impl IntoView {
     );
 
     let upsert_post = create_server_action::<UpsertPost>();
+    let delete_post = create_server_action::<DeletePost>();
 
+    // take them to the new or updated post once they create or edit it
     create_effect(move |_| {
         let id = upsert_post.value().get();
         if let Some(Ok(id)) = id {
+            let navigate = use_navigate();
             navigate(format!("/view/{}", id).as_str(), Default::default());
+        }
+    });
+
+    // take them to the home page if they delete a post
+    create_effect(move |_| {
+        let id = delete_post.value().get();
+        log!("delete create effect");
+        if let Some(Ok(_)) = id {
+            let set_toast: WriteSignal<ToastMessage> =
+                use_context().expect("couldn't get toast context");
+            log!("set toast set");
+            set_toast.set(ToastMessage {
+                message: String::from("Post deleted."),
+                toast_type: ToastType::Success,
+                visible: true,
+            });
+
+            let navigate = use_navigate();
+            navigate("/", Default::default());
         }
     });
 
     view! {
         <Transition fallback=move || view! { <p>"Loading..."</p> }>
             <ErrorBoundary fallback={error_fallback()}>
-                <label class="block mb-4">
-                <span class="text-gray-700">Title</span>
-                    <input class="mt-1 p-2 w-full border rounded-md" type="text" id="title" name="title"
-                        on:input=move |ev| {
-                            post_resource.update(|curr| curr.as_mut().unwrap().as_mut().unwrap().title = event_target_value(&ev));
-                        }
-                    prop:value={post_resource.get().map(|res| res.ok()).flatten().map(|post| post.title)}/>
-                </label>
-            <h1>{move || post_resource.and_then(move |post| post.title.clone())}</h1>
                 <div class="flex h-screen">
                 <div class="min-w-[50%] bg-gray-100 p-10">
                 <ActionForm action=upsert_post>
+                    <input type="hidden" name="id"
+                        prop:value={move || get_post_from_res(post_resource).map(|post| post.id)}/>
                     <label class="block mb-4">
                     <span class="text-gray-700">Date</span>
                     <input class="mt-1 p-2 w-full border rounded-md" type="datetime" id="datetime" name="dt"
@@ -74,7 +89,7 @@ pub fn EditPost() -> impl IntoView {
                             };
                             post_resource.update(|curr| curr.as_mut().unwrap().as_mut().unwrap().dt = utc_dt);
                         }
-                    prop:value={get_post_from_res(post_resource).map(|post| format_rfc3339_without_timezone(post.dt))}
+                        prop:value={move || get_post_from_res(post_resource).map(|post| format_rfc3339_without_timezone(post.dt))}
                     />
                     </label>
                     <label class="block mb-4">
@@ -83,7 +98,7 @@ pub fn EditPost() -> impl IntoView {
                         on:input=move |ev| {
                             post_resource.update(|curr| curr.as_mut().unwrap().as_mut().unwrap().image_url = event_target_value(&ev));
                         }
-                        prop:value={get_post_from_res(post_resource).map(|post| post.image_url)}/>
+                        prop:value={move || get_post_from_res(post_resource).map(|post| post.image_url)}/>
                     </label>
                     <label class="block mb-4">
                     <span class="text-gray-700">Title</span>
@@ -91,7 +106,7 @@ pub fn EditPost() -> impl IntoView {
                         on:input=move |ev| {
                             post_resource.update(|curr| curr.as_mut().unwrap().as_mut().unwrap().title = event_target_value(&ev));
                         }
-                        prop:value={get_post_from_res(post_resource).map(|post| post.title)}/>
+                        prop:value={move || get_post_from_res(post_resource).map(|post| post.title)}/>
                     </label>
                     <label class="block mb-4">
                     <span class="text-gray-700">Entry</span>
@@ -101,11 +116,15 @@ pub fn EditPost() -> impl IntoView {
                             post_resource.update(|curr| curr.as_mut().unwrap().as_mut().unwrap().text = event_target_value(&ev));
                         }
                 >
-                    {post_resource.and_then(|post| post.text.clone())}
+                    {move || post_resource.and_then(|post| post.text.clone())}
                 </textarea>
                 </label>
-                <input type="submit" value="Submit"/>
-            </ActionForm>
+                <input type="submit" value="Submit" class="mx-auto w-1/3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"/>
+                </ActionForm>
+                <ActionForm action=delete_post>
+                    <input type="hidden" name="id" prop:value={move || get_post_from_res(post_resource).map(|post| post.id)}/>
+                    <input type="submit" value="Delete Post" class="mx-auto w-1/3 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer"/>
+                </ActionForm>
                 </div>
                 // right side preview
                 <div>

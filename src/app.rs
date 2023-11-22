@@ -4,6 +4,7 @@ use leptos_router::*;
 use crate::edit_post::edit_post::EditPost;
 use crate::blog_previews::blog_previews::BlogPreviews;
 use crate::about::about::About;
+use crate::toast::Toast;
 use crate::view_post::view_post::ViewPost;
 
 #[component]
@@ -53,6 +54,7 @@ pub fn App() -> impl IntoView {
                 </Routes>
             </main>
         </Router>
+        <Toast/>
     }
 }
 

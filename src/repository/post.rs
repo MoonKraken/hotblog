@@ -26,7 +26,7 @@ pub async fn upsert_post(
         extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
 
     let id = id.unwrap_or(Uuid::new_v4().to_string());
-    sqlx::query("INSERT INTO post VALUES ($1, $2, $3, $4, $5)")
+    sqlx::query("INSERT INTO post VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET dt=excluded.dt, image_url=excluded.image_url, title=excluded.title, text=excluded.text")
         .bind(&id)
         .bind(&dt)
         .bind(&image_url)
@@ -50,6 +50,21 @@ pub async fn get_post(id: String) -> Result<Post, ServerFnError> {
         .map_err(|_| ServerFnError::ServerError("error getting post".to_owned()))?;
 
     Ok(res)
+}
+
+#[server(DeletePost, "/api")]
+pub async fn delete_post(id: String) -> Result<(), ServerFnError> {
+    log!("delete_post {:?}", &id);
+    let pool: Arc<Pool<Sqlite>> =
+        extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
+
+    sqlx::query("DELETE FROM post WHERE ID = ?")
+        .bind(id)
+        .execute(&*pool)
+        .await
+        .map_err(|_| ServerFnError::ServerError("error deleting post".to_owned()))?;
+
+    Ok(())
 }
 
 #[server(GetPreviews, "/api")]

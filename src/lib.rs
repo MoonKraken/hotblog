@@ -6,6 +6,7 @@ pub mod view_post;
 pub mod model;
 pub mod repository;
 pub mod errors_fallback;
+pub mod toast;
 use cfg_if::cfg_if;
 
 cfg_if! {
