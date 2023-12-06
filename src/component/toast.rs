@@ -25,22 +25,22 @@ pub fn Toast() -> impl IntoView {
     });
     provide_context::<WriteSignal<ToastMessage>>(set_toast);
 
-    let base_toast_classes = "fixed bottom-10 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300";
+    let base_toast_classes = "fixed bottom-10 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-600";
 
     let toast_classes = move || -> String {
         let t = toast.get();
-        let extra_classes = if t.visible == true {
-            let bg_color = match t.toast_type {
-                ToastType::Success => "bg-green-600",
-                ToastType::Error => "bg-red-600",
-            };
+        let background_class = match t.toast_type {
+            ToastType::Success => "bg-green-600",
+            ToastType::Error => "bg-red-600",
+        };
 
-            format!("{bg_color} opacity-1")
+        let opacity_class = if t.visible == true {
+            "opacity-1".to_string()
         } else {
             "opacity-0".to_string()
         };
 
-        format!("{} {}", base_toast_classes, extra_classes)
+        format!("{} {} {}", base_toast_classes, background_class, opacity_class)
     };
 
     create_effect(move |_| {

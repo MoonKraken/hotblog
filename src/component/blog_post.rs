@@ -1,8 +1,6 @@
-use std::rc::Rc;
-
 use leptos::*;
 
-use crate::model::post::Post;
+use crate::model::blog_post::Post;
 
 #[component]
 pub fn BlogPost(post: Post) -> impl IntoView {

@@ -1,11 +1,9 @@
 use leptos::*;
-use leptos::logging::log;
 
-use crate::errors_fallback::error_fallback;
-use crate::model::post::Post;
-use crate::repository::post::get_previews;
-
-use super::blog_card::BlogCard;
+use super::errors_fallback::error_fallback;
+use super::blog_preview_card::BlogPreviewCard;
+use crate::model::blog_post::Post;
+use crate::repository::blog_repository::get_previews;
 
 #[component]
 fn BlogDescription() -> impl IntoView {
@@ -29,12 +27,12 @@ pub fn BlogPreviews() -> impl IntoView {
     );
 
     let previews_view = move || -> Option<Result<View, _>>{
-        post_resource.and_then(|previews| {
+        post_resource.and_then(|previews: &Vec<Post>| {
             previews
                 .into_iter()
                 .map(|preview| {
                     view! {
-                        <BlogCard blog_preview={preview.clone()}/>
+                        <BlogPreviewCard blog_preview={preview.clone()}/>
                     }
                 })
                 .collect_view()

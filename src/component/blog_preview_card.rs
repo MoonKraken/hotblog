@@ -1,9 +1,9 @@
 use leptos::*;
 
-use crate::model::post::Post;
+use crate::model::blog_post::Post;
 
 #[component]
-pub fn BlogCard(blog_preview: Post) -> impl IntoView {
+pub fn BlogPreviewCard(blog_preview: Post) -> impl IntoView {
     let dt = format!("{}", blog_preview.dt.format("%b %e, %Y %I:%M%P"));
     view! {
 

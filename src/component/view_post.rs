@@ -1,9 +1,10 @@
-use crate::errors_fallback::error_fallback;
+use super::errors_fallback::error_fallback;
 use leptos::*;
 use leptos_router::*;
 use serde::{Deserialize, Serialize};
-
-use crate::{model::post::Post, repository::post::get_post, view_post::blog_post::BlogPost};
+use crate::model::blog_post::Post;
+use crate::component::blog_post::BlogPost;
+use crate::repository::blog_repository::get_post;
 
 #[derive(Params, Eq, PartialEq, Debug, Clone, Serialize, Deserialize)]
 struct ViewPostParams {

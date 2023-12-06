@@ -1,4 +1,4 @@
-use crate::model::post::Post;
+use crate::model::blog_post::Post;
 use std::sync::Arc;
 
 #[cfg(feature = "ssr")]

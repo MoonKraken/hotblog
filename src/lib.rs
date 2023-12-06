@@ -1,12 +1,8 @@
 pub mod app;
-pub mod edit_post;
-pub mod blog_previews;
-pub mod about;
-pub mod view_post;
+pub mod component;
 pub mod model;
 pub mod repository;
-pub mod errors_fallback;
-pub mod toast;
+
 use cfg_if::cfg_if;
 
 cfg_if! {

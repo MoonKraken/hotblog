@@ -1,11 +1,11 @@
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use crate::edit_post::edit_post::EditPost;
-use crate::blog_previews::blog_previews::BlogPreviews;
-use crate::about::about::About;
-use crate::toast::Toast;
-use crate::view_post::view_post::ViewPost;
+use crate::component::edit_post::EditPost;
+use crate::component::blog_previews::BlogPreviews;
+use crate::component::about::About;
+use crate::component::toast::Toast;
+use crate::component::view_post::ViewPost;
 
 #[component]
 pub fn Navbar() -> impl IntoView {
