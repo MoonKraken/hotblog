@@ -140,12 +140,16 @@ pub fn EditPost() -> impl IntoView {
                         {move || post_resource.and_then(|post| post.text.clone())}
                     </textarea>
                     </label>
+                <div class="flex justify-center pb-4">
                     <input type="submit" value="Submit" class="mx-auto w-1/3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"/>
+                </div>
                 </ActionForm>
                 <ActionForm action=delete_post>
                     <input type="hidden" name="id"
                         prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.id).ok())}/>
+                <div class="flex justify-center pb-4">
                     <input type="submit" value="Delete Post" class="mx-auto w-1/3 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer"/>
+                </div>
                 </ActionForm>
                 </div>
                 // right side preview
