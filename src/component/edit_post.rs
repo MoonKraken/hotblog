@@ -2,17 +2,18 @@ use super::blog_post::BlogPost;
 use super::errors_fallback::error_fallback;
 use super::toast::ToastMessage;
 use super::toast::ToastType;
+use chrono::Duration;
+use chrono::DurationRound;
+use chrono::Local;
+use chrono::NaiveDateTime;
 use leptos::logging::log;
 use leptos::*;
 use leptos_router::*;
 
 use crate::model::blog_post::Post;
 use crate::repository::blog_repository::get_post;
-use crate::repository::blog_repository::upsert_post;
 use crate::repository::blog_repository::DeletePost;
 use crate::repository::blog_repository::UpsertPost;
-use chrono::DateTime;
-use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Params, Eq, PartialEq, Debug, Clone, Serialize, Deserialize)]
@@ -20,8 +21,8 @@ struct EditPostParams {
     post_id: Option<String>,
 }
 
-fn format_rfc3339_without_timezone(datetime: DateTime<Utc>) -> String {
-    datetime.format("%Y-%m-%dT%H:%M:%S").to_string()
+fn format_dt(datetime: NaiveDateTime) -> String {
+    datetime.format("%Y-%m-%dT%H:%M").to_string()
 }
 
 #[component]
@@ -47,7 +48,7 @@ pub fn EditPost() -> impl IntoView {
         let id = upsert_post.value().get();
         if let Some(Ok(id)) = id {
             set_toast.set(ToastMessage {
-                message: String::from("Post created."),
+                message: String::from("Post submitted."),
                 toast_type: ToastType::Success,
                 visible: true,
             });
@@ -76,19 +77,20 @@ pub fn EditPost() -> impl IntoView {
         <Transition fallback=move || view! { <p>"Loading..."</p> }>
             <ErrorBoundary fallback={error_fallback()}>
                 <div class="flex h-screen">
-                <div class="min-w-[50%] max-h-[90%] dark:bg-gray-800 bg-gray-100 p-10 rounded-md">
+                <div class="min-w-[50%] max-h-[90%] text-gray-200 dark:bg-gray-800 bg-gray-100 p-10 rounded-md">
                 <ActionForm action=upsert_post>
                     <input type="hidden" name="id" prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.id).ok())}/>
                     <label class="block mb-4">
-                        <span class="text-gray-700">Date</span>
-                        <input class="mt-1 p-2 w-full border rounded-md" type="datetime" id="datetime" name="dt"
+                        <span>Date</span>
+                        <input class="mt-1 p-2 w-full" type="datetime-local" id="datetime" name="dt"
                             on:input=move |ev| {
                                 let dt: String = event_target_value(&ev);
                                 log!("{:?}", dt);
-                                let chrono_dt = DateTime::parse_from_rfc3339(&dt);
+                                let chrono_dt = NaiveDateTime::parse_from_str(&dt, "%Y-%m-%dT%H:%M");
+                                log!("{:?}", chrono_dt);
                                 let utc_dt = match chrono_dt {
-                                    Ok(dt) => dt.with_timezone(&Utc),
-                                    _ => Utc::now() // this means the browser gave us something wrong?
+                                    Ok(dt) => dt,
+                                    _ => Local::now().naive_local()
                                 };
                                 post_resource.update(|curr| {
                                     if let Some(Ok(post)) = curr {
@@ -99,12 +101,13 @@ pub fn EditPost() -> impl IntoView {
                             prop:value={move || {
                                 post_resource
                                     .get()
-                                    .and_then(|res| res.map(|post| format_rfc3339_without_timezone(post.dt)).ok())
-                            }}/>
+                                    .and_then(|res| res.map(|post| format_dt(post.dt)).ok())
+                            }}
+                    />
                     </label>
                     <label class="block mb-4">
-                    <span class="text-gray-700">Image URL</span>
-                    <input class="mt-1 p-2 w-full border rounded-md" type="text" id="image_url" name="image_url"
+                    <span>Image URL</span>
+                    <input class="mt-1 p-2 w-full" type="text" id="image_url" name="image_url"
                         on:input=move |ev| {
                             post_resource.update(|curr| {
                                 if let Some(Ok(post)) = curr {
@@ -115,8 +118,8 @@ pub fn EditPost() -> impl IntoView {
                         prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.image_url).ok())}/>
                     </label>
                     <label class="block mb-4">
-                    <span class="text-gray-700">Title</span>
-                    <input class="mt-1 p-2 w-full border rounded-md" type="text" id="title" name="title"
+                    <span>Title</span>
+                    <input class="mt-1 p-2 w-full" type="text" id="title" name="title"
                         on:input=move |ev| {
                             post_resource.update(|curr| {
                                 if let Some(Ok(post)) = curr {
@@ -127,8 +130,8 @@ pub fn EditPost() -> impl IntoView {
                             prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.title).ok())}/>
                     </label>
                     <label class="block mb-4">
-                    <span class="text-gray-700">Entry</span>
-                    <textarea class="mt-1 p-2 w-full border rounded-md" id="text" name="text"
+                    <span>Entry</span>
+                    <textarea class="mt-1 p-2 w-full" id="text" name="text"
                         on:input=move |ev| {
                             post_resource.update(|curr| {
                                 if let Some(Ok(post)) = curr {

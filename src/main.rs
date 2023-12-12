@@ -10,7 +10,7 @@ async fn main() -> std::io::Result<()> {
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use sqlx::{migrate, sqlite::SqlitePoolOptions};
 
-    let conf = get_configuration(None).await.unwrap();
+    let conf = get_configuration(None).await.expect("couldn't load configuration!");
     let addr = conf.leptos_options.site_addr;
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(App);
