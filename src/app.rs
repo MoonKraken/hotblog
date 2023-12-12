@@ -3,22 +3,20 @@ use leptos_meta::*;
 use leptos_router::*;
 use crate::component::edit_post::EditPost;
 use crate::component::blog_previews::BlogPreviews;
-use crate::component::about::About;
 use crate::component::toast::Toast;
 use crate::component::view_post::ViewPost;
 
 #[component]
 pub fn Navbar() -> impl IntoView {
     view! {
-        <div class="bg-stone-800 text-white p-4">
+        <div class="dark:bg-gray-800 text-white p-4">
             <div class="container mx-auto flex justify-between items-center">
                 // title on the left
-                <a href="/" class="text-2xl font-bold">Blog</a>
+                <a href="/" class="text-2xl font-bold">The Roaming Crab</a>
 
                 // nav bar
                 <nav>
                     <ul class="flex space-x-4">
-                        <li><a href="/about" class="hover:text-blue-400">About</a></li>
                         <li><a href="/" class="hover:text-blue-400">Blog</a></li>
                         <li><a href="/edit" class="hover:text-blue-400">Create</a></li>
                     </ul>
@@ -39,22 +37,21 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
 
         // sets the document title
-        <Title text="Welcome to Leptos"/>
+        <Title text="The Roaming Crab"/>
+        <Toast/>
 
         <Navbar/>
         // content for this welcome page
 
         <Router>
-            <main>
+            <main class="dark:bg-gray-700 dark:text-gray-200 p-8 h-screen">
                 <Routes>
                     <Route path="" view=BlogPreviews/>
-                    <Route path="/about" view=About/>
                     <Route path="/edit/:post_id?" view=EditPost/>
                     <Route path="/view/:post_id?" view=ViewPost/>
                 </Routes>
             </main>
         </Router>
-        <Toast/>
     }
 }
 

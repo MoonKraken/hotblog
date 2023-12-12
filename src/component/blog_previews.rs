@@ -8,13 +8,12 @@ use crate::repository::blog_repository::get_previews;
 #[component]
 fn BlogDescription() -> impl IntoView {
     view! {
-        <div class="p-5">
-            <div class="h-40 w-40 overflow-hidden rounded-full">
+        <div class="p-5 flex flex-col items-center">
+            <div class="mb-5 h-40 w-40 shadow-xl overflow-hidden rounded-full">
                 <img src="http://cttm.io/images/CodeToTheMoonV1Square.png"/>
             </div>
-            <div class="text-4xl">"Welcome to my awesome blog"</div>
-            <div class="text-xl">"It's about cool stuff"</div>
-            <div class="text-lg">"are you cool?"</div>
+            <div class="p-2 text-4xl">"The Roaming Crab"</div>
+            <div class="p-2 text-xl">"It's a travel blog about fun places"</div>
         </div>
     }
 }
@@ -41,7 +40,7 @@ pub fn BlogPreviews() -> impl IntoView {
 
     view! {
         <BlogDescription/>
-        <div class="bg-gray-100 p-8 flex flex-wrap max-w-full">
+        <div class="dark:bg-gray-800 p-8 rounded-lg flex flex-wrap max-w-full">
             <Suspense fallback=move || view! { <p>"Loading..."</p> }>
                 <ErrorBoundary fallback={error_fallback()}>
                     {previews_view}

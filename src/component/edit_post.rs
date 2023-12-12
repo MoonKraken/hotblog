@@ -8,6 +8,7 @@ use leptos_router::*;
 
 use crate::model::blog_post::Post;
 use crate::repository::blog_repository::get_post;
+use crate::repository::blog_repository::upsert_post;
 use crate::repository::blog_repository::DeletePost;
 use crate::repository::blog_repository::UpsertPost;
 use chrono::DateTime;
@@ -40,7 +41,7 @@ pub fn EditPost() -> impl IntoView {
     let upsert_post = create_server_action::<UpsertPost>();
     let delete_post = create_server_action::<DeletePost>();
 
-    let set_toast: WriteSignal<ToastMessage> = use_context().expect("couldn't get toast context");
+    let set_toast: WriteSignal<ToastMessage> = expect_context();
     // take them to the new or updated post once they create or edit it
     create_effect(move |_| {
         let id = upsert_post.value().get();
@@ -58,7 +59,6 @@ pub fn EditPost() -> impl IntoView {
     // take them to the home page if they delete a post
     create_effect(move |_| {
         let id = delete_post.value().get();
-        log!("delete create effect");
         if let Some(Ok(_)) = id {
             log!("set toast set");
             set_toast.set(ToastMessage {
@@ -76,7 +76,7 @@ pub fn EditPost() -> impl IntoView {
         <Transition fallback=move || view! { <p>"Loading..."</p> }>
             <ErrorBoundary fallback={error_fallback()}>
                 <div class="flex h-screen">
-                <div class="min-w-[50%] bg-gray-100 p-10">
+                <div class="min-w-[50%] max-h-[90%] dark:bg-gray-800 bg-gray-100 p-10 rounded-md">
                 <ActionForm action=upsert_post>
                     <input type="hidden" name="id" prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.id).ok())}/>
                     <label class="block mb-4">

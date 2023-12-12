@@ -15,7 +15,6 @@ pub struct ToastMessage {
     pub visible: bool,
 }
 
-/// .
 #[component]
 pub fn Toast() -> impl IntoView {
     let (toast, set_toast) = create_signal::<ToastMessage>(ToastMessage {
