@@ -24,7 +24,7 @@ pub fn Toast() -> impl IntoView {
     });
     provide_context::<WriteSignal<ToastMessage>>(set_toast);
 
-    let base_toast_classes = "fixed bottom-10 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-600";
+    let base_toast_classes = "fixed bottom-10 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-600 z-40";
 
     let toast_classes = move || -> String {
         let t = toast.get();
