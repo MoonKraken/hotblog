@@ -139,8 +139,9 @@ pub fn EditPost() -> impl IntoView {
                                 }
                             });
                         }
+                        prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.text).ok())}
                     >
-                        {move || post_resource.and_then(|post| post.text.clone())}
+                        // {move || post_resource.and_then(|post| post.text.clone())}
                     </textarea>
                     </label>
                 <div class="flex justify-center pb-4">
