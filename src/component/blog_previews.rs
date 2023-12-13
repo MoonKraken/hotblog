@@ -12,7 +12,7 @@ fn BlogDescription() -> impl IntoView {
             <div class="mb-5 h-40 w-40 shadow-xl overflow-hidden rounded-full">
                 <img src="http://cttm.io/images/CodeToTheMoonV1Square.png"/>
             </div>
-            <div class="p-2 text-4xl">"The Roaming Crab"</div>
+            <div class="p-2 text-4xl">"Moonbound"</div>
             <div class="p-2 text-xl">"It's a travel blog about fun places"</div>
         </div>
     }
@@ -40,7 +40,7 @@ pub fn BlogPreviews() -> impl IntoView {
 
     view! {
         <BlogDescription/>
-        <div class="dark:bg-gray-800 p-8 rounded-lg flex flex-wrap max-w-full">
+        <div class="dark:bg-gray-800 p-8 rounded-lg flex flex-wrap">
             <Suspense fallback=move || view! { <p>"Loading..."</p> }>
                 <ErrorBoundary fallback={error_fallback()}>
                     {previews_view}

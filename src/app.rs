@@ -12,7 +12,7 @@ pub fn Navbar() -> impl IntoView {
         <div class="dark:bg-gray-800 text-white p-4">
             <div class="container mx-auto flex justify-between items-center">
                 // title on the left
-                <a href="/" class="text-2xl font-bold">The Roaming Crab</a>
+                <a href="/" class="text-2xl font-bold">Moonbound</a>
 
                 // nav bar
                 <nav>
@@ -37,14 +37,14 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
 
         // sets the document title
-        <Title text="The Roaming Crab"/>
+        <Title text="Moonbound"/>
         <Toast/>
 
         <Navbar/>
         // content for this welcome page
 
         <Router>
-            <main class="dark:bg-gray-700 dark:text-gray-200 p-8 h-screen">
+            <main class="dark:bg-gray-700 dark:text-gray-200 p-8 h-full">
                 <Routes>
                     <Route path="" view=BlogPreviews/>
                     <Route path="/edit/:post_id?" view=EditPost/>
