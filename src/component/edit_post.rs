@@ -140,9 +140,7 @@ pub fn EditPost() -> impl IntoView {
                             });
                         }
                         prop:value={move || post_resource.get().and_then(|res| res.map(|post| post.text).ok())}
-                    >
-                        // {move || post_resource.and_then(|post| post.text.clone())}
-                    </textarea>
+                    />
                     </label>
                 <div class="flex justify-center pb-4">
                     <input type="submit" value="Submit" class="mx-auto w-1/3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"/>

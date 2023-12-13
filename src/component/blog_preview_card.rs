@@ -13,7 +13,7 @@ pub fn BlogPreviewCard(blog_preview: Post) -> impl IntoView {
                 <div class="flex-none">
                     <h2 class="text-xl font-semibold mb-2 w-48 h-10 truncate">{blog_preview.title}</h2>
 
-                    <p class="dark:text-gray-200 mb-4 w-32 h-18 truncate">{blog_preview.text}</p>
+                    <p class="dark:text-gray-200 mb-4 w-48 h-18">{blog_preview.text}</p>
 
                     <div class="flex justify-between">
                         <span class="dark:text-gray-200">{dt}</span>

@@ -22,7 +22,7 @@ fn BlogDescription() -> impl IntoView {
 pub fn BlogPreviews() -> impl IntoView {
     let post_resource = create_resource(
         || {},
-        |_| async move { get_previews(None, None, 20, 10).await },
+        |_| async move { get_previews(None, None, 40, 10).await },
     );
 
     let previews_view = move || -> Option<Result<View, _>>{

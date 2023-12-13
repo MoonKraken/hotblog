@@ -87,7 +87,7 @@ pub async fn get_previews(
         "SELECT
             id, dt, image_url, title,
             CASE
-                WHEN LENGTH(text) > $1 THEN SUBSTR(text, $1, ?) || '...'
+                WHEN LENGTH(text) > $1 THEN SUBSTR(text, 0, $1) || '...'
                 ELSE text
             END AS text
         FROM post
