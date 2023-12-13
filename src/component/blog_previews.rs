@@ -13,7 +13,7 @@ fn BlogDescription() -> impl IntoView {
                 <img src="http://cttm.io/images/CodeToTheMoonV1Square.png"/>
             </div>
             <div class="p-2 text-4xl">"Moonbound"</div>
-            <div class="p-2 text-xl">"It's a travel blog about fun places"</div>
+            <div class="p-2 text-xl">"A travel blog about fun places"</div>
         </div>
     }
 }
