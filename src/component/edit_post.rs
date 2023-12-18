@@ -85,9 +85,7 @@ pub fn EditPost() -> impl IntoView {
                         <input class="mt-1 p-2 w-full" type="datetime-local" id="datetime" name="dt"
                             on:input=move |ev| {
                                 let dt: String = event_target_value(&ev);
-                                log!("{:?}", dt);
                                 let chrono_dt = NaiveDateTime::parse_from_str(&dt, "%Y-%m-%dT%H:%M");
-                                log!("{:?}", chrono_dt);
                                 let utc_dt = match chrono_dt {
                                     Ok(dt) => dt,
                                     _ => Local::now().naive_local()
