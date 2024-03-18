@@ -1,6 +1,8 @@
 use crate::model::blog_post::Post;
 use std::{sync::Arc, thread::sleep, time::Duration};
 
+use leptos::ServerFnError::ServerError;
+
 #[cfg(feature = "ssr")]
 use actix_web::web::Data;
 #[cfg(feature = "ssr")]
@@ -23,7 +25,7 @@ pub async fn upsert_post(
     text: String,
 ) -> Result<String, ServerFnError> {
     let pool: Arc<Pool<Sqlite>> =
-        extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
+        extract::<Data<Pool<Sqlite>>>().await?.into_inner();
 
     let id = id.unwrap_or(Uuid::new_v4().to_string());
     sqlx::query("INSERT INTO post VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO UPDATE SET dt=excluded.dt, image_url=excluded.image_url, title=excluded.title, text=excluded.text")
@@ -42,12 +44,11 @@ pub async fn upsert_post(
 pub async fn get_post(id: String) -> Result<Post, ServerFnError> {
     log!("get_post {:?}", &id);
     let pool: Arc<Pool<Sqlite>> =
-        extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
+        extract::<Data<Pool<Sqlite>>>().await?.into_inner();
     let res: Post = sqlx::query_as("SELECT * FROM post WHERE id = ?")
         .bind(id)
         .fetch_one(&*pool)
-        .await
-        .map_err(|_| ServerFnError::ServerError("error getting post".to_owned()))?;
+        .await?;
 
     Ok(res)
 }
@@ -56,13 +57,12 @@ pub async fn get_post(id: String) -> Result<Post, ServerFnError> {
 pub async fn delete_post(id: String) -> Result<(), ServerFnError> {
     log!("delete_post {:?}", &id);
     let pool: Arc<Pool<Sqlite>> =
-        extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
+        extract::<Data<Pool<Sqlite>>>().await?.into_inner();
 
     sqlx::query("DELETE FROM post WHERE ID = ?")
         .bind(id)
         .execute(&*pool)
-        .await
-        .map_err(|_| ServerFnError::ServerError("error deleting post".to_owned()))?;
+        .await?;
 
     Ok(())
 }
@@ -82,7 +82,8 @@ pub async fn get_previews(
         page_size
     );
     let pool: Arc<Pool<Sqlite>> =
-        extract(|conn: Data<Pool<Sqlite>>| async move { conn.into_inner() }).await?;
+        extract::<Data<Pool<Sqlite>>>().await?.into_inner();
+
     let res: Vec<Post> = sqlx::query_as(
         "SELECT
             id, dt, image_url, title,
@@ -99,6 +100,5 @@ pub async fn get_previews(
     .fetch_all(&*pool)
     .await?;
 
-    // Err(ServerFnError::ServerError("forced error".to_string()))
     Ok(res)
 }
