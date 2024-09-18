@@ -16,7 +16,7 @@ leptos = { version = "0.6" }
 leptos_meta = { version = "0.6" }
 leptos_actix = { version = "0.6", optional = true }
 leptos_router = { version = "0.6" }
-wasm-bindgen = "=0.2.91"
+wasm-bindgen = "=0.2.93"
 chrono = { version = "0.4.31", features = ["serde"] }
 sqlx = { version = "0.7", features = [ "runtime-tokio", "sqlite", "chrono" ], optional = true }
 serde = { version = "1.0.187", features = ["derive"] }
